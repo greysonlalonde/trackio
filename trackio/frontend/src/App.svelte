@@ -137,8 +137,14 @@
   let artifactsEmpty = $state(false);
 
   function openArtifactVersion(name, version) {
+    if (
+      artifactSelection?.name === name &&
+      artifactSelection?.version === version
+    ) {
+      return;
+    }
     artifactSelection = { name, version };
-    setArtifactSelectionParams(name, version);
+    setArtifactSelectionParams(name, version, { push: true });
   }
 
   function runKey(run) {
@@ -375,9 +381,15 @@
 
   $effect(() => {
     urlTick;
-    if (currentPage !== "artifacts" || !sidebarHidden) return;
+    if (currentPage !== "artifacts") return;
     const { name, version } = getArtifactSelectionFromUrl();
     if (!name || version == null) return;
+    if (
+      artifactSelection?.name === name &&
+      artifactSelection?.version === version
+    ) {
+      return;
+    }
     artifactSelection = { name, version };
   });
 
