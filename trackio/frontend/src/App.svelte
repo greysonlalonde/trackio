@@ -606,6 +606,7 @@
 
   {#if currentPage === "artifacts" && !sidebarHidden}
     <ArtifactsSidebar
+      bind:open={sidebarOpen}
       {projects}
       bind:project={selectedProject}
       projectLocked={projectLocked}
