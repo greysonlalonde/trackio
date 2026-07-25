@@ -39,6 +39,7 @@
     getQueryParam,
     getArtifactSelectionFromUrl,
     setArtifactSelectionParams,
+    clearArtifactSelectionParams,
   } from "./lib/router.js";
   import Settings from "./pages/Settings.svelte";
   import { initTheme, isDark, onThemeChange } from "./lib/theme.js";
@@ -86,6 +87,7 @@
   let requestedUrlXAxis = $state(null);
   let urlXAxisApplied = $state(false);
   let sidebarOpen = $state(true);
+  let artifactsSidebarOpen = $state(true);
   let sidebarHidden = $state(false);
   let navbarHidden = $state(false);
   let hideEmptyTabs = $state(false);
@@ -135,6 +137,7 @@
   let runConfigsProject = $state(null);
   let artifactSelection = $state(null);
   let artifactsEmpty = $state(false);
+  let artifactSelectionProject = $state(null);
 
   function openArtifactVersion(name, version) {
     if (
@@ -380,6 +383,15 @@
   });
 
   $effect(() => {
+    if (selectedProject === artifactSelectionProject) return;
+    const previous = artifactSelectionProject;
+    artifactSelectionProject = selectedProject;
+    if (previous == null) return;
+    artifactSelection = null;
+    clearArtifactSelectionParams();
+  });
+
+  $effect(() => {
     urlTick;
     if (currentPage !== "artifacts") return;
     const { name, version } = getArtifactSelectionFromUrl();
@@ -606,7 +618,7 @@
 
   {#if currentPage === "artifacts" && !sidebarHidden}
     <ArtifactsSidebar
-      bind:open={sidebarOpen}
+      bind:open={artifactsSidebarOpen}
       {projects}
       bind:project={selectedProject}
       projectLocked={projectLocked}
